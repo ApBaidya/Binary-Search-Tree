@@ -1,6 +1,6 @@
 /*
 Aparajita Baidya
-3.27.2026
+3.28.2026
 To do:
 -add to tree
 -print out tree (show parent child relationship)
@@ -19,7 +19,7 @@ To do:
 void mkVect(string nums, vector<int>*);
 void AddProc(vector<int>* numsV, Node* & root);//does all the cin, vector making, and iterate to add
 void Add(Node* & current, int data);//find proper location for new data -> l e a f -> set null to new node w/ this data 
-void Display();//display tree --> left root right
+void Display(Node* current, int depth);//display tree --> left root right
 void Search(Node* current, int value);//see if specific value in tree
 void Remove();//remove specified value from tree
 void Quit();//remove everything is tree
@@ -49,6 +49,7 @@ int main(){
       cout<<nums<<endl;
       mkVect(nums, numsV);
       AddProc(numsV, root);
+      numsV->clear();
     }
     else if(strcmp(input, "s")==0){
       cout<<root->getR()->getD()<<endl;
@@ -59,7 +60,9 @@ int main(){
       Search(root, searchVal);
     }
     else if(strcmp(input, "d")==0){
-      
+      if(root!=nullptr){
+	Display(root, 0);
+      }
     }
     else if(strcmp(input, "r")==0){
 
@@ -143,5 +146,25 @@ void Search(Node* current, int value){
   return;
 }
 
-
-
+//heh. just infix.
+void Display(Node* current, int depth){
+  if(current == nullptr){
+    return;
+  }
+  if(current->getR() == nullptr && current->getL()==nullptr){//leaf
+    for(int i = 0; i < depth; i++){
+      cout<<"\t";
+    }
+    cout<<current->getD()<<endl;
+    return;
+  }
+  else{
+    Display(current->getL(), (depth+1));
+    for(int i = 0; i<depth; i++){
+      cout<<"\t";
+    }
+    cout<<current->getD()<<endl;
+    Display(current->getR(), (depth+1));
+  }
+  return;
+}
