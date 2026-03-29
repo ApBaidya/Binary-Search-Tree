@@ -87,6 +87,7 @@ void AddProc(vector<int>* numsV, Node* & root){
 }
 
 void Add(Node* & current, int data){
+  Node* next = nullptr;
   if(!current){
     //mk current node w/ data
     current = new Node;
@@ -96,20 +97,45 @@ void Add(Node* & current, int data){
   else{
     //consider which child
     if(current->getD() > data){//left
-      Add(current->getL(), data);
+      next = current->getL();
+      Add(next, data);
     }
     else if(current->getD() <= data){//right
-      Add(current->getR(), data);
+      next = current->getR();
+      Add(next, data);
     }
   }
+  
 }
 
 void Search(Node* current, int value){
   if(!current){//empty/end of tree
+    cout<<"not here"<<endl;
+    return;
   }
   else if(current->getD() == value){//found it
-    
+    cout << "found "<<current->getD()<<endl;
+    return;
   }
+  else if(current->getD() < value){
+    if(current->getL() != nullptr){//make sure that children exist
+      Search(current->getL(), value);
+    }
+    else{
+      cout<<"not here"<<endl;
+      return;
+    }
+  }
+  else{
+    if(current->getD() > value){
+      Search(current->getR(), value);
+    }
+    else{
+      cout<<"not here"<<endl;
+      return;
+    }
+  }
+  return;
 }
 
 
