@@ -20,7 +20,7 @@ void mkVect(string nums, vector<int>*);
 void AddProc(vector<int>* numsV, Node* & root);//does all the cin, vector making, and iterate to add
 void Add(Node* & current, int data);//find proper location for new data -> l e a f -> set null to new node w/ this data 
 void Display();//display tree --> left root right
-void Search();//see if specific value in tree
+void Search(Node* current, int value);//see if specific value in tree
 void Remove();//remove specified value from tree
 void Quit();//remove everything is tree
 
@@ -32,6 +32,8 @@ int main(){
   //stuff for the vector of number inputs
   string nums;
   vector<int>* numsV = new vector<int>();
+  //search value
+  int searchVal;
   //enter main loop
   cout<<"welcome!!! (^w^)/"<<endl;
   while(running == 1){
@@ -49,10 +51,15 @@ int main(){
       AddProc(numsV, root);
     }
     else if(strcmp(input, "s")==0){
-      
+      cout<<root->getR()->getD()<<endl;
+      cout<<"what value's existance do you wish to confirm?"<<endl;
+      cin>>searchVal;
+      cin.ignore(50, '\n');
+      cin.clear();
+      Search(root, searchVal);
     }
     else if(strcmp(input, "d")==0){
-
+      
     }
     else if(strcmp(input, "r")==0){
 
@@ -66,6 +73,7 @@ int main(){
 }
 
 void mkVect(string nums, vector<int>* numsV){
+  cout<<"a"<<endl;
   string temp = "";
   for(int i = 0; i < nums.length(); i++){
     if(nums[i] == ' '){
@@ -77,63 +85,60 @@ void mkVect(string nums, vector<int>* numsV){
     }
   }
   numsV -> push_back(stoi(temp));
+  cout<<"vector done"<<endl;
   return;
 }
 
 void AddProc(vector<int>* numsV, Node* & root){
   for(vector<int>::iterator it = numsV->begin(); it != numsV->end(); ++it){
+    cout<<"adding "<<(*it)<<endl;
     Add(root, (*it));
   }
 }
 
 void Add(Node* & current, int data){
-  Node* next = nullptr;
   if(!current){
+    cout<<"here";
     //mk current node w/ data
     current = new Node;
     current -> setD(data);
+    current -> setL(nullptr);
+    current -> setR(nullptr);
     return;
   }
   else{
     //consider which child
     if(current->getD() > data){//left
-      next = current->getL();
+      cout<<"less"<<endl;
+      Node* next = current->getL();
       Add(next, data);
+      current->setL(next);
     }
     else if(current->getD() <= data){//right
-      next = current->getR();
+      cout<<"more"<<endl;
+      Node* next = current->getR();
       Add(next, data);
+      current->setR(next);
     }
   }
-  
 }
 
 void Search(Node* current, int value){
-  if(!current){//empty/end of tree
+  if(current == nullptr){//empty/end of tree
     cout<<"not here"<<endl;
     return;
   }
-  else if(current->getD() == value){//found it
+  if(current->getD() == value){//found it
     cout << "found "<<current->getD()<<endl;
     return;
   }
-  else if(current->getD() < value){
-    if(current->getL() != nullptr){//make sure that children exist
-      Search(current->getL(), value);
-    }
-    else{
-      cout<<"not here"<<endl;
-      return;
-    }
+  else if(current->getD() > value){
+    cout<<"left"<<endl;
+    Search(current->getL(), value);
   }
   else{
-    if(current->getD() > value){
-      Search(current->getR(), value);
-    }
-    else{
-      cout<<"not here"<<endl;
-      return;
-    }
+    cout<<"right"<<endl;
+    Search(current->getR(), value);
   }
   return;
 }
