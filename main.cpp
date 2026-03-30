@@ -52,7 +52,6 @@ int main(){
       numsV->clear();
     }
     else if(strcmp(input, "s")==0){
-      cout<<root->getR()->getD()<<endl;
       cout<<"what value's existance do you wish to confirm?"<<endl;
       cin>>searchVal;
       cin.ignore(50, '\n');
@@ -174,95 +173,82 @@ void Display(Node* current, int depth){
   return;
 }
 
-void RemTwo(){
-}
-
 void Remove(Node* & current, int data){
-  //root
-  if(current->getD() == data){
-    //alone
+  Node* c = nullptr;
+  if(!current){//empty
+    return;
+  }
+  //delete time
+  if(current->getD() == data){//found value to delete
+    //leaf
+    if(current->getL() == nullptr && current->getR()==nullptr){
+      delete current;
+      current = nullptr;
+      return;
+    }
     //one child
+    else if(current->getL() != nullptr && current->getR()==nullptr){
+      c = current->getL();
+      delete current;
+      current = nullptr;
+      current = c;
+      return;
+    }
+    else if(current->getL() == nullptr && current->getR()!=nullptr){
+      c = current->getR();
+      delete current;
+      current = nullptr;
+      current = c;
+      return;
+    }
     //2 children
-    return;
-  }
-  //empty
-  if(!current){
-    return;
-  }
-  if(current->getD() > data && current->getL() != nullptr){//left, and there is indeed a left child
-    if(current->getL()->getD() == data){//next value is the child
-      //leaf
-      if(current->getL()->getL() == nullptr && current->getL()->getR() == nullptr){
-	cout<<"rem leaf"<<endl;
-	delete current->getL();
-	current->setL(nullptr);
+    if(current->getL() != nullptr && current->getR()!=nullptr){
+      //find that successor->right child, leftmost
+      Node* temp = current;
+      Node* successor = current->getR();
+      while(successor->getL()!=nullptr){
+	temp = successor;
+	successor = successor->getL();
+      }
+      cout<<"AAAA"<<endl;
+      current->setD(successor->getD());//set current data to successor
+      //handle whatever happens with successor
+      if(successor->getR()!=nullptr){
+	cout<<"Richard I save me."<<endl;
+	c = successor->getR();
+	successor->setD(c->getD());
+	successor->setL(c->getL());
+	successor->setR(c->getR());
+	c->setR(nullptr);
+	c->setL(nullptr);
+	delete c;
 	return;
       }
-      //1 child L
-      else if(current->getL()->getL() != nullptr && current->getL()->getR() == nullptr){
-	cout<<"rem w/ 1 child L"<<endl;
-	Node* newL = current->getL()->getL();
-	current->getL()->setL(nullptr);
-	delete current->getL();
-	current->setL(newL);
+      else{
+	cout<<"By my chivalry's founder"<<endl;
+	if(temp == current){
+	  delete successor;
+	  temp->setR(nullptr);
+	  return;
+	}
+	else{
+	  delete successor;
+	  temp->setL(nullptr);
+	  return;
+	}
       }
-      //1 child R
-      else if(current->getL()->getL() == nullptr && current->getL()->getR() != nullptr){
-	cout<<"rem w/ 1 child R"<<endl;
-	Node* newR = current->getL()->getR();
-	current->getL()->setR(nullptr);
-	delete current->getL();
-	current->setL(newR);
-
-      }
-      //2 children
-      
-    }
-    else{//recurse
-      Node* next = current->getL();
-      Remove(next, data);
-      current->setL(next);
     }
   }
-
-  else if(current->getD() <= data && current->getR() != nullptr){//right, and there is indeed a right child
-    if(current->getR()->getD() == data){//next value is the child
-      //leaf
-      if(current->getR()->getL() == nullptr && current->getR()->getR() == nullptr){
-        cout<<"rem leaf"<<endl;
-        delete current->getR();
-        current->setR(nullptr);
-        return;
-      }
-      //1 child L
-      else if(current->getR()->getL() != nullptr && current->getR()->getR() == nullptr){
-        cout<<"rem w/ 1 child L"<<endl;
-        Node* newL = current->getR()->getL();
-        current->getR()->setL(nullptr);
-        delete current->getR();
-        current->setR(newL);
-      }
-      //1 child R
-      else if(current->getR()->getL() == nullptr && current->getR()->getR() != nullptr){
-        cout<<"rem w/ 1 child R"<<endl;
-        Node* newR = current->getR()->getR();
-        current->getR()->setR(nullptr);
-        delete current->getR();
-        current->setR(newR);
-	
-      }
-      //2 children
-      
+  else{//recurse
+    if(current->getD() > data){
+      Node* L = current->getL();
+      Remove(L, data);
+      current->setL(L);
     }
-    else{//recurse
-      Node* next = current->getR();
-      Remove(next, data);
-      current->setR(next);
+    else{
+      Node* R = current->getR();
+      Remove(R, data);
+      current->setR(R);
     }
-    
-  }
-  else{//data doesn't exist
-    cout<<"(-_-)"<<endl;
-    return;
   }
 }
