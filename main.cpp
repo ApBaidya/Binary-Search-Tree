@@ -1,11 +1,9 @@
 /*
 Aparajita Baidya
-3.28.2026
+3.29.2026
 To do:
--add to tree
--print out tree (show parent child relationship)
+-add to tree --> fix
 -remove from tree --> consider the 3 cases
--search if value in tree
 -Add comments in order to not shame myself. And my family. And my ancestors. 
 */
 
@@ -21,7 +19,7 @@ void AddProc(vector<int>* numsV, Node* & root);//does all the cin, vector making
 void Add(Node* & current, int data);//find proper location for new data -> l e a f -> set null to new node w/ this data 
 void Display(Node* current, int depth);//display tree --> left root right
 void Search(Node* current, int value);//see if specific value in tree
-void Remove();//remove specified value from tree
+void Remove(Node* & current, int data);//remove specified value from tree
 void Quit();//remove everything is tree
 
 int main(){
@@ -34,6 +32,8 @@ int main(){
   vector<int>* numsV = new vector<int>();
   //search value
   int searchVal;
+  //value to delete
+  int delVal;
   //enter main loop
   cout<<"welcome!!! (^w^)/"<<endl;
   while(running == 1){
@@ -65,6 +65,11 @@ int main(){
       }
     }
     else if(strcmp(input, "r")==0){
+      cout<<"what value's existance do you wish to delete?"<<endl;
+      cin>>delVal;
+      cin.ignore(50, '\n');
+      cin.clear();
+      Remove(root, delVal);
 
     }
     else if(strcmp(input, "q")==0){
@@ -167,4 +172,97 @@ void Display(Node* current, int depth){
     Display(current->getR(), (depth+1));
   }
   return;
+}
+
+void RemTwo(){
+}
+
+void Remove(Node* & current, int data){
+  //root
+  if(current->getD() == data){
+    //alone
+    //one child
+    //2 children
+    return;
+  }
+  //empty
+  if(!current){
+    return;
+  }
+  if(current->getD() > data && current->getL() != nullptr){//left, and there is indeed a left child
+    if(current->getL()->getD() == data){//next value is the child
+      //leaf
+      if(current->getL()->getL() == nullptr && current->getL()->getR() == nullptr){
+	cout<<"rem leaf"<<endl;
+	delete current->getL();
+	current->setL(nullptr);
+	return;
+      }
+      //1 child L
+      else if(current->getL()->getL() != nullptr && current->getL()->getR() == nullptr){
+	cout<<"rem w/ 1 child L"<<endl;
+	Node* newL = current->getL()->getL();
+	current->getL()->setL(nullptr);
+	delete current->getL();
+	current->setL(newL);
+      }
+      //1 child R
+      else if(current->getL()->getL() == nullptr && current->getL()->getR() != nullptr){
+	cout<<"rem w/ 1 child R"<<endl;
+	Node* newR = current->getL()->getR();
+	current->getL()->setR(nullptr);
+	delete current->getL();
+	current->setL(newR);
+
+      }
+      //2 children
+      
+    }
+    else{//recurse
+      Node* next = current->getL();
+      Remove(next, data);
+      current->setL(next);
+    }
+  }
+
+  else if(current->getD() <= data && current->getR() != nullptr){//right, and there is indeed a right child
+    if(current->getR()->getD() == data){//next value is the child
+      //leaf
+      if(current->getR()->getL() == nullptr && current->getR()->getR() == nullptr){
+        cout<<"rem leaf"<<endl;
+        delete current->getR();
+        current->setR(nullptr);
+        return;
+      }
+      //1 child L
+      else if(current->getR()->getL() != nullptr && current->getR()->getR() == nullptr){
+        cout<<"rem w/ 1 child L"<<endl;
+        Node* newL = current->getR()->getL();
+        current->getR()->setL(nullptr);
+        delete current->getR();
+        current->setR(newL);
+      }
+      //1 child R
+      else if(current->getR()->getL() == nullptr && current->getR()->getR() != nullptr){
+        cout<<"rem w/ 1 child R"<<endl;
+        Node* newR = current->getR()->getR();
+        current->getR()->setR(nullptr);
+        delete current->getR();
+        current->setR(newR);
+	
+      }
+      //2 children
+      
+    }
+    else{//recurse
+      Node* next = current->getR();
+      Remove(next, data);
+      current->setR(next);
+    }
+    
+  }
+  else{//data doesn't exist
+    cout<<"(-_-)"<<endl;
+    return;
+  }
 }
