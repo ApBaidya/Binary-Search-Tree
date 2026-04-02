@@ -1,9 +1,7 @@
 /*
 Aparajita Baidya
-3.29.2026
+4.1.2026
 To do:
--add to tree --> fix
--remove from tree --> consider the 3 cases
 -Add comments in order to not shame myself. And my family. And my ancestors. 
 */
 
@@ -20,7 +18,7 @@ void Add(Node* & current, int data);//find proper location for new data -> l e a
 void Display(Node* current, int depth);//display tree --> left root right
 void Search(Node* current, int value);//see if specific value in tree
 void Remove(Node* & current, int data);//remove specified value from tree
-void Quit();//remove everything is tree
+void Quit(Node* & current);//remove everything is tree
 
 int main(){
   int running = 1;
@@ -73,9 +71,14 @@ int main(){
     }
     else if(strcmp(input, "q")==0){
       running = 0;
+      Quit(root);
+      Display(root,0);
       //clear everything
     }
   }//end main loop
+  numsV->clear();
+  delete numsV;
+  cout<<"Farewell. Fare. Thee. Well."<<endl;
   return 0;
 }
 
@@ -105,9 +108,9 @@ void AddProc(vector<int>* numsV, Node* & root){
 
 void Add(Node* & current, int data){
   if(!current){
-    cout<<"here";
+    //cout<<"here";
     //mk current node w/ data
-    current = new Node;
+    current = new Node();
     current -> setD(data);
     current -> setL(nullptr);
     current -> setR(nullptr);
@@ -116,13 +119,13 @@ void Add(Node* & current, int data){
   else{
     //consider which child
     if(current->getD() > data){//left
-      cout<<"less"<<endl;
+      //cout<<"less"<<endl;
       Node* next = current->getL();
       Add(next, data);
       current->setL(next);
     }
     else if(current->getD() <= data){//right
-      cout<<"more"<<endl;
+      //cout<<"more"<<endl;
       Node* next = current->getR();
       Add(next, data);
       current->setR(next);
@@ -132,7 +135,7 @@ void Add(Node* & current, int data){
 
 void Search(Node* current, int value){
   if(current == nullptr){//empty/end of tree
-    cout<<"not here"<<endl;
+    //cout<<"not here"<<endl;
     return;
   }
   if(current->getD() == value){//found it
@@ -140,11 +143,11 @@ void Search(Node* current, int value){
     return;
   }
   else if(current->getD() > value){
-    cout<<"left"<<endl;
+    //cout<<"left"<<endl;
     Search(current->getL(), value);
   }
   else{
-    cout<<"right"<<endl;
+    //cout<<"right"<<endl;
     Search(current->getR(), value);
   }
   return;
@@ -163,12 +166,12 @@ void Display(Node* current, int depth){
     return;
   }
   else{
-    Display(current->getL(), (depth+1));
+    Display(current->getR(), (depth+1));
     for(int i = 0; i<depth; i++){
       cout<<"\t";
     }
     cout<<current->getD()<<endl;
-    Display(current->getR(), (depth+1));
+    Display(current->getL(), (depth+1));
   }
   return;
 }
@@ -210,11 +213,11 @@ void Remove(Node* & current, int data){
 	temp = successor;
 	successor = successor->getL();
       }
-      cout<<"AAAA"<<endl;
+      //cout<<"AAAA"<<endl;
       current->setD(successor->getD());//set current data to successor
       //handle whatever happens with successor
       if(successor->getR()!=nullptr){
-	cout<<"Richard I save me."<<endl;
+	//cout<<"Richard I save me."<<endl;
 	c = successor->getR();
 	successor->setD(c->getD());
 	successor->setL(c->getL());
@@ -225,7 +228,7 @@ void Remove(Node* & current, int data){
 	return;
       }
       else{
-	cout<<"By my chivalry's founder"<<endl;
+	//cout<<"By my chivalry's founder"<<endl;
 	if(temp == current){
 	  delete successor;
 	  temp->setR(nullptr);
@@ -251,4 +254,22 @@ void Remove(Node* & current, int data){
       current->setR(R);
     }
   }
+}
+
+void Quit(Node* & current){
+  if(current == nullptr){ //branch g o n e
+    return;
+  }
+  Node* L = nullptr;
+  L = current->getL();
+  Quit(L);
+  Node* R = nullptr;
+  R = current->getR();
+  Quit(R);
+  current->setL(L);
+  current->setR(R);
+  //current->setL(nullptr);
+  //current->setR(nullptr);
+  delete current;
+  current = nullptr;
 }
