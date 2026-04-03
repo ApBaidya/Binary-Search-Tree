@@ -1,6 +1,6 @@
 /*
 Aparajita Baidya
-4.1.2026
+4.3.2026
 To do:
 -Add comments in order to not shame myself. And my family. And my ancestors. 
 */
@@ -40,28 +40,28 @@ int main(){
     cin>>input;//get command
     cin.ignore(10, '\n');
     cin.clear();
-    if(strcmp(input, "a")==0){
+    if(strcmp(input, "a")==0){//add
       cout<<"Please input your numbers"<<endl;
       getline(cin, nums);
       cout<<endl;
       cout<<nums<<endl;
-      mkVect(nums, numsV);
-      AddProc(numsV, root);
-      numsV->clear();
+      mkVect(nums, numsV);//store all the numbers in a vector
+      AddProc(numsV, root);//which then is iterated through 
+      numsV->clear();//clear the vector each time
     }
-    else if(strcmp(input, "s")==0){
+    else if(strcmp(input, "s")==0){//search
       cout<<"what value's existance do you wish to confirm?"<<endl;
       cin>>searchVal;
       cin.ignore(50, '\n');
       cin.clear();
       Search(root, searchVal);
     }
-    else if(strcmp(input, "d")==0){
+    else if(strcmp(input, "d")==0){//display
       if(root!=nullptr){
 	Display(root, 0);
       }
     }
-    else if(strcmp(input, "r")==0){
+    else if(strcmp(input, "r")==0){//remove
       cout<<"what value's existance do you wish to delete?"<<endl;
       cin>>delVal;
       cin.ignore(50, '\n');
@@ -69,48 +69,48 @@ int main(){
       Remove(root, delVal);
 
     }
-    else if(strcmp(input, "q")==0){
+    else if(strcmp(input, "q")==0){//quit
       running = 0;
       Quit(root);
-      Display(root,0);
+      Display(root,0);//just to check
       //clear everything
     }
   }//end main loop
-  numsV->clear();
-  delete numsV;
+  numsV->clear();//clear vector for the last time
+  delete numsV;//delete said vector 
   cout<<"Farewell. Fare. Thee. Well."<<endl;
   return 0;
 }
 
-void mkVect(string nums, vector<int>* numsV){
+void mkVect(string nums, vector<int>* numsV){//nums is the data, numsV is the vector
   cout<<"a"<<endl;
   string temp = "";
-  for(int i = 0; i < nums.length(); i++){
+  for(int i = 0; i < nums.length(); i++){//add to vector every seperation
     if(nums[i] == ' '){
       numsV->push_back(stoi(temp));//https://www.codecademy.com/article/how-to-convert-a-string-to-an-integer-in-c
       temp = "";
     }
     else{
-      temp += nums[i];
+      temp += nums[i];//add to temp to get the full number
     }
   }
-  numsV -> push_back(stoi(temp));
+  numsV -> push_back(stoi(temp));//push back the last temp value
   cout<<"vector done"<<endl;
   return;
 }
 
-void AddProc(vector<int>* numsV, Node* & root){
+void AddProc(vector<int>* numsV, Node* & root){//numsV number vector, root is obvious
   for(vector<int>::iterator it = numsV->begin(); it != numsV->end(); ++it){
     cout<<"adding "<<(*it)<<endl;
-    Add(root, (*it));
+    Add(root, (*it));//actual add code
   }
 }
 
 void Add(Node* & current, int data){
-  if(!current){
+  if(!current){//where to add
     //cout<<"here";
     //mk current node w/ data
-    current = new Node();
+    current = new Node();//current will be nullptr, so make a new node
     current -> setD(data);
     current -> setL(nullptr);
     current -> setR(nullptr);
@@ -122,7 +122,7 @@ void Add(Node* & current, int data){
       //cout<<"less"<<endl;
       Node* next = current->getL();
       Add(next, data);
-      current->setL(next);
+      current->setL(next);//reconnect
     }
     else if(current->getD() <= data){//right
       //cout<<"more"<<endl;
@@ -135,14 +135,14 @@ void Add(Node* & current, int data){
 
 void Search(Node* current, int value){
   if(current == nullptr){//empty/end of tree
-    //cout<<"not here"<<endl;
+    cout<<"not here"<<endl;
     return;
   }
   if(current->getD() == value){//found it
     cout << "found "<<current->getD()<<endl;
     return;
   }
-  else if(current->getD() > value){
+  else if(current->getD() > value){//to find which branch to go down
     //cout<<"left"<<endl;
     Search(current->getL(), value);
   }
@@ -155,18 +155,18 @@ void Search(Node* current, int value){
 
 //heh. just infix.
 void Display(Node* current, int depth){
-  if(current == nullptr){
+  if(current == nullptr){//end of branch
     return;
   }
-  if(current->getR() == nullptr && current->getL()==nullptr){//leaf
+  if(current->getR() == nullptr && current->getL()==nullptr){//leaf hence nothing else to do except print the leaf
     for(int i = 0; i < depth; i++){
       cout<<"\t";
     }
     cout<<current->getD()<<endl;
     return;
   }
-  else{
-    Display(current->getR(), (depth+1));
+  else{//print right, center, left
+    Display(current->getR(), (depth+1));//increase depth
     for(int i = 0; i<depth; i++){
       cout<<"\t";
     }
@@ -186,7 +186,7 @@ void Remove(Node* & current, int data){
     //leaf
     if(current->getL() == nullptr && current->getR()==nullptr){
       delete current;
-      current = nullptr;
+      current = nullptr;//just to be assured of the value
       return;
     }
     //one child
@@ -194,14 +194,14 @@ void Remove(Node* & current, int data){
       c = current->getL();
       delete current;
       current = nullptr;
-      current = c;
+      current = c;//replace
       return;
     }
     else if(current->getL() == nullptr && current->getR()!=nullptr){
       c = current->getR();
       delete current;
       current = nullptr;
-      current = c;
+      current = c;//replace
       return;
     }
     //2 children
@@ -216,9 +216,9 @@ void Remove(Node* & current, int data){
       //cout<<"AAAA"<<endl;
       current->setD(successor->getD());//set current data to successor
       //handle whatever happens with successor
-      if(successor->getR()!=nullptr){
-	//cout<<"Richard I save me."<<endl;
-	c = successor->getR();
+      if(successor->getR()!=nullptr){//is a right child
+	//cout<<"Anime Richard I, save me."<<endl;
+	c = successor->getR();//replace stuff in successor, and then delete right, essentially replacing succcessor with it's right 
 	successor->setD(c->getD());
 	successor->setL(c->getL());
 	successor->setR(c->getR());
@@ -227,14 +227,14 @@ void Remove(Node* & current, int data){
 	delete c;
 	return;
       }
-      else{
+      else{//no right child stuff to deal with
 	//cout<<"By my chivalry's founder"<<endl;
 	if(temp == current){
 	  delete successor;
 	  temp->setR(nullptr);
 	  return;
 	}
-	else{
+	else{//there is a successor
 	  delete successor;
 	  temp->setL(nullptr);
 	  return;
@@ -242,7 +242,7 @@ void Remove(Node* & current, int data){
       }
     }
   }
-  else{//recurse
+  else{//recurse depending on the branch
     if(current->getD() > data){
       Node* L = current->getL();
       Remove(L, data);
@@ -256,6 +256,7 @@ void Remove(Node* & current, int data){
   }
 }
 
+//like postfix
 void Quit(Node* & current){
   if(current == nullptr){ //branch g o n e
     return;
