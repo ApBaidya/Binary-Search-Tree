@@ -1,6 +1,6 @@
 /*
 Aparajita Baidya
-4.3.2026
+4.6.2026
 To do:
 -Add comments in order to not shame myself. And my family. And my ancestors. 
 */
@@ -10,8 +10,10 @@ To do:
 #include <cstring>
 #include <string>
 #include <vector>
+#include <fstream>
 
 //define f u n c t i o n s :D
+void fileAdd(Node * & root);
 void mkVect(string nums, vector<int>*);
 void AddProc(vector<int>* numsV, Node* & root);//does all the cin, vector making, and iterate to add
 void Add(Node* & current, int data);//find proper location for new data -> l e a f -> set null to new node w/ this data 
@@ -37,6 +39,8 @@ int main(){
   while(running == 1){
     cout<<endl;
     cout<<"[a] add \n"<<"[s] search \n"<<"[d] display \n"<<"[r] remove \n"<<"[q] quit"<<endl;//all commands
+    //REMEMBER THE FILE ADDDDDD
+    cout<<"oh yeah, and to ad via file, type [f]"<<endl;
     cin>>input;//get command
     cin.ignore(10, '\n');
     cin.clear();
@@ -75,13 +79,31 @@ int main(){
       Display(root,0);//just to check
       //clear everything
     }
+    else if(strcmp(input,"f")==0){
+      fileAdd(root);
+    }
   }//end main loop
   numsV->clear();//clear vector for the last time
   delete numsV;//delete said vector 
   cout<<"Farewell. Fare. Thee. Well."<<endl;
   return 0;
 }
-
+void fileAdd(Node* & root){
+  string filesss;
+  int num;
+  cout<<"file name please!";
+  cin>>filesss;//get the file name
+  cin.clear();
+  ifstream n(filesss);
+  if(n){//if the file exists
+    while(n>>num){
+      Add(root, num);
+    }
+  }
+  else{
+    cout<<"AAAAA"<<endl;//gotta let them know the file doesn't exist by screaming
+  }
+}
 void mkVect(string nums, vector<int>* numsV){//nums is the data, numsV is the vector
   cout<<"a"<<endl;
   string temp = "";
